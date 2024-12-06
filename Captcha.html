@@ -2,104 +2,56 @@
 <html lang="en">
 
 <head>
+    <link rel="stylesheet" href="style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple CAPTCHA</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-            padding: 20px;
-            background: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-
-        .captcha {
-            font-size: 20px;
-            letter-spacing: 5px;
-            text-align: center;
-            margin: 10px 0;
-        }
-
-        .refresh-btn {
-            cursor: pointer;
-            font-size: 14px;
-            color: blue;
-            background: none;
-            border: none;
-            text-decoration: underline;
-            margin-left: 10px;
-        }
-
-        .error {
-            color: red;
-            margin: 10px 0;
-        }
-
-        button {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            border: none;
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-    </style>
 </head>
 
 <body>
     <div class="container">
-        <h2>Simple CAPTCHA Form</h2>
-        <form id="captchaForm">
-            <div>
-                <p class="captcha" id="captchaText"></p>
-                <button type="button" class="refresh-btn" onclick="generateCaptcha()">Refresh</button>
-            </div>
-            <label for="captchaInput">Enter the CAPTCHA:</label>
-            <input type="text" id="captchaInput" required>
-            <p class="error" id="errorMsg"></p>
-            <button type="submit">Submit</button>
-        </form>
+        <h2>Slide Until Green</h2>
+    </div>
+    <div class="container">
+        <h2>Custom Slider Example</h2>
+        <div class="slider-container">
+            <input type="range" min="0" max="100" value="50" class="slider" id="mySlider">
+            <p class="value">Value: <span id="sliderValue">50</span></p>
+        </div>
     </div>
 
     <script>
-        let captchaCode = '';
+        const slider = document.getElementById('mySlider');
+        const sliderValue = document.getElementById('sliderValue');
+        let correctValue = randomGreenPos();
 
-        function generateCaptcha() {
-            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            captchaCode = '';
-            for (let i = 0; i < 6; i++) {
-                captchaCode += characters.charAt(Math.floor(Math.random() * characters.length));
-            }
-            document.getElementById('captchaText').innerText = captchaCode;
+        function randomGreenPos() {
+            return Math.floor(Math.random() * 101); // Random value between 0 and 100
         }
 
-        document.getElementById('captchaForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-            const userInput = document.getElementById('captchaInput').value;
-            if (userInput === captchaCode) {
-                alert('CAPTCHA Verified Successfully!');
+        function generateRandomSlider() {
+            correctValue = randomGreenPos(); // Set a new random correct value
+            console.log("Correct value:", correctValue); // Debugging hint for testing
+            slider.classList.remove("correct");
+            slider.classList.add("incorrect");
+            slider.value = Math.floor(Math.random() * 101); // Start at a random position
+            sliderValue.textContent = slider.value;
+        }
+
+        slider.addEventListener('input', function () {
+            sliderValue.textContent = slider.value;
+            if (parseInt(slider.value) === correctValue) {
+                slider.classList.add("correct");
+                slider.classList.remove("incorrect");
+                alert("Success! You found the correct value.");
             } else {
-                document.getElementById('errorMsg').innerText = 'Incorrect CAPTCHA. Please try again.';
-                generateCaptcha();
-                document.getElementById('captchaInput').value = '';
+                slider.classList.add("incorrect");
+                slider.classList.remove("correct");
             }
         });
 
-        // Generate CAPTCHA on page load
-        generateCaptcha();
+        // Initialize slider with random value
+        generateRandomSlider();
     </script>
 </body>
 
